@@ -72,19 +72,23 @@ class Installer
         echo "\nNote: User-modified files are preserved automatically.\n";
     }
 
-    public static function preUninstall(Event $event)
+    public static function preUninstall(PackageEvent $event)
     {
-        $packageName = 'krugozor/russian-bad-words';
         $io = $event->getIO();
+        $package = $event->getOperation()->getPackage();
 
         $io->write("\n<info>Russian Bad Words: Uninstallation</info>");
         $io->write("==================================");
-        $io->write("Package: {$packageName}");
-        $io->write("Note: Dictionary files in project root are preserved");
-        $io->write("==================================\n");
+        $io->write(sprintf(
+            "Package: <comment>%s</comment> (version: %s)",
+            $package->getName(),
+            $package->getPrettyVersion()
+        ));
+        $io->write("Note: Dictionary files are preserved in project root");
+        $io->write("==================================");
 
-        $io->write("<comment>Action:</comment> Dictionary files in '/dictionaries' were NOT removed");
-        $io->write("<comment>Reason:</comment> Preserving user data is our priority");
-        $io->write("\n<info>Uninstallation completed (files preserved)</info>\n");
+        $io->write("\n<comment>Action:</comment> No files were removed from project");
+        $io->write("<comment>Reason:</comment> User dictionaries preserved intentionally");
+        $io->write("\n<info>Uninstallation completed safely</info>\n");
     }
 }
