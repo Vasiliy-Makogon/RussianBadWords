@@ -27,6 +27,9 @@
         ],
         "post-update-cmd": [
             "Krugozor\\RussianBadWords\\Installer::postInstall"
+        ],
+        "pre-package-uninstall": [
+            "Krugozor\\RussianBadWords\\Installer::preUninstall"
         ]
     }
 }
