@@ -1,13 +1,13 @@
 <?php
 
-declare(strict_types=1);
+namespace Krugozor\RussianBadWords\Items;
 
-namespace Krugozor\RussianBadWords;
+use Krugozor\RussianBadWords\AbstractBadWordsValidator;
 
 /**
  * Проверка на ненормативную лексику.
  */
-class ProfanityWordsValidator extends AbstractValidator
+class ProfanityWordsValidator extends AbstractBadWordsValidator
 {
     /**
      * @var array
