@@ -71,4 +71,20 @@ class Installer
         echo "- Files skipped: {$skippedFiles}\n";
         echo "\nNote: User-modified files are preserved automatically.\n";
     }
+
+    public static function preUninstall(Event $event)
+    {
+        $packageName = 'krugozor/russian-bad-words';
+        $io = $event->getIO();
+
+        $io->write("\n<info>Russian Bad Words: Uninstallation</info>");
+        $io->write("==================================");
+        $io->write("Package: {$packageName}");
+        $io->write("Note: Dictionary files in project root are preserved");
+        $io->write("==================================\n");
+
+        $io->write("<comment>Action:</comment> Dictionary files in '/dictionaries' were NOT removed");
+        $io->write("<comment>Reason:</comment> Preserving user data is our priority");
+        $io->write("\n<info>Uninstallation completed (files preserved)</info>\n");
+    }
 }
