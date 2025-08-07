@@ -11,18 +11,19 @@ class Installer
     public static function postInstall(Event $event)
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+        $packageName = 'krugozor/russian-bad-words';
+        $packageDir = implode(DIRECTORY_SEPARATOR, [$vendorDir, $packageName]);
 
         // Проверяем, установлен ли ещё пакет
-        if (!file_exists($vendorDir . '/krugozor/russian-bad-words')) {
+        if (!file_exists($packageDir)) {
             return;
         }
 
         $projectRoot = dirname($vendorDir);
-        $packageDir = $vendorDir . '/krugozor/russian-bad-words';
 
         // Пути к файлам
-        $sourceDir = $packageDir . '/dictionaries';
-        $targetDir = $projectRoot . '/dictionaries';
+        $sourceDir = implode(DIRECTORY_SEPARATOR, [$packageDir, 'dictionaries']);
+        $targetDir = implode(DIRECTORY_SEPARATOR, [$projectRoot, 'dictionaries']);
 
         // Инициализация
         $fs = new Filesystem();
@@ -53,21 +54,21 @@ class Installer
                 // Сравниваем содержимое
                 if (md5_file($sourceFile) !== md5_file($targetFile)) {
                     // Делаем резервную копию перед обновлением
-                    $backupFile = $targetDir . '/backup_' . $filename;
+                    $backupFile = $targetDir . '/backup_' . date('Y-m-d_H:i:s') . $filename;
                     copy($targetFile, $backupFile);
 
                     copy($sourceFile, $targetFile);
                     $updatedFiles++;
-                    echo "[UPDATED] {$filename} (backup saved as backup_{$filename})\n";
+                    echo "[UPDATED] {$targetFile} (backup saved as $backupFile)\n";
                 } else {
                     $skippedFiles++;
-                    echo "[SKIPPED] {$filename} (no changes)\n";
+                    echo "[SKIPPED] {$targetFile} (no changes)\n";
                 }
             } else {
                 // Новый файл
                 copy($sourceFile, $targetFile);
                 $newFiles++;
-                echo "[ADDED] {$filename}\n";
+                echo "[ADDED] {$targetFile}\n";
             }
         }
 
@@ -99,7 +100,7 @@ class Installer
             '• To protect your custom word modifications',
             '• To prevent accidental data loss',
             '',
-            '<info>✔ Uninstallation completed safely</info>',
+            '<info>Uninstallation completed safely</info>',
             '=========================================',
             ''
         ]);
