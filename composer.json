@@ -1,0 +1,32 @@
+{
+    "name": "krugozor/russian-bad-words",
+    "description": "Словарь и валидация плохих русских слов для PHP",
+    "type": "library",
+    "keywords": [
+        "bad words",
+        "russian bad words",
+        "словарь плохих русских слов",
+        "словарь плохих слов"
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "authors": [
+        {
+            "name": "Vasiliy Makogon"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Krugozor\\RussianBadWords\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Krugozor\\RussianBadWords\\Installer::postInstall"
+        ],
+        "post-update-cmd": [
+            "Krugozor\\RussianBadWords\\Installer::postInstall"
+        ]
+    }
+}
