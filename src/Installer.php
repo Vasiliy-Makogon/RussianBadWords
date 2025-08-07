@@ -11,12 +11,18 @@ class Installer
     public static function postInstall(Event $event)
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+
+        // Проверяем, установлен ли ещё пакет
+        if (!file_exists($vendorDir . '/krugozor/russian-bad-words')) {
+            return;
+        }
+
         $projectRoot = dirname($vendorDir);
-        $packageDir = $vendorDir.'/krugozor/russian-bad-words';
+        $packageDir = $vendorDir . '/krugozor/russian-bad-words';
 
         // Пути к файлам
-        $sourceDir = $packageDir.'/dictionaries';
-        $targetDir = $projectRoot.'/dictionaries';
+        $sourceDir = $packageDir . '/dictionaries';
+        $targetDir = $projectRoot . '/dictionaries';
 
         // Инициализация
         $fs = new Filesystem();
@@ -38,16 +44,16 @@ class Installer
         }
 
         // Обработка файлов
-        foreach (glob($sourceDir.'/*.php') as $sourceFile) {
+        foreach (glob($sourceDir . '/*.php') as $sourceFile) {
             $filename = basename($sourceFile);
-            $targetFile = $targetDir.'/'.$filename;
+            $targetFile = $targetDir . '/' . $filename;
 
             // Файл существует
             if (file_exists($targetFile)) {
                 // Сравниваем содержимое
                 if (md5_file($sourceFile) !== md5_file($targetFile)) {
                     // Делаем резервную копию перед обновлением
-                    $backupFile = $targetDir.'/backup_'.$filename;
+                    $backupFile = $targetDir . '/backup_' . $filename;
                     copy($targetFile, $backupFile);
 
                     copy($sourceFile, $targetFile);
