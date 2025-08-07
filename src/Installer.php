@@ -84,22 +84,23 @@ class Installer
         $io = $event->getIO();
         $package = $event->getOperation()->getPackage();
 
-        // Явно форсируем вывод с помощью IOInterface
         $io->write([
             '',
-            '<info>Russian Bad Words: Uninstallation</info>',
-            '==================================',
-            sprintf('Package: <comment>%s</comment> (version: %s)',
-                $package->getName(),
-                $package->getPrettyVersion()
-            ),
-            'Note: Dictionary files are preserved in project root',
-            '==================================',
+            '<info>=== Russian Bad Words Package Removal ===</info>',
+            '=========================================',
+            sprintf('<comment>Package:</comment>    %s', $package->getName()),
+            sprintf('<comment>Version:</comment>     %s', $package->getPrettyVersion()),
             '',
-            '<comment>Action:</comment> No files will be removed from project',
-            '<comment>Reason:</comment> User dictionaries preserved intentionally',
+            '<fg=yellow>NOTICE: Dictionary files preservation</>',
+            '• Your custom dictionary files in /dictionaries/',
+            '• Will NOT be modified or removed',
             '',
-            '<info>Uninstallation completed safely</info>',
+            '<comment>Why?</comment>',
+            '• To protect your custom word modifications',
+            '• To prevent accidental data loss',
+            '',
+            '<info>✔ Uninstallation completed safely</info>',
+            '=========================================',
             ''
         ]);
     }
