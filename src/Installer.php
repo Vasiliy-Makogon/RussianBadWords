@@ -4,6 +4,7 @@ namespace Krugozor\RussianBadWords;
 
 use Composer\Script\Event;
 use Composer\Util\Filesystem;
+use Composer\Installer\PackageEvent;
 
 class Installer
 {
