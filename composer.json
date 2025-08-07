@@ -28,5 +28,11 @@
         "post-update-cmd": [
             "Krugozor\\RussianBadWords\\Installer::postInstall"
         ]
+    },
+    "extra": {
+        "installer-dirs": {
+            "default": "vendor/krugozor/dictionaries",
+            "description": "Configure target directory via extra.russian-bad-words.target-dir in your project"
+        }
     }
 }
