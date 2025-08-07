@@ -84,18 +84,23 @@ class Installer
         $io = $event->getIO();
         $package = $event->getOperation()->getPackage();
 
-        $io->write("\n<info>Russian Bad Words: Uninstallation</info>");
-        $io->write("==================================");
-        $io->write(sprintf(
-            "Package: <comment>%s</comment> (version: %s)",
-            $package->getName(),
-            $package->getPrettyVersion()
-        ));
-        $io->write("Note: Dictionary files are preserved in project root");
-        $io->write("==================================");
-
-        $io->write("\n<comment>Action:</comment> No files were removed from project");
-        $io->write("<comment>Reason:</comment> User dictionaries preserved intentionally");
-        $io->write("\n<info>Uninstallation completed safely</info>\n");
+        // Явно форсируем вывод с помощью IOInterface
+        $io->write([
+            '',
+            '<info>Russian Bad Words: Uninstallation</info>',
+            '==================================',
+            sprintf('Package: <comment>%s</comment> (version: %s)',
+                $package->getName(),
+                $package->getPrettyVersion()
+            ),
+            'Note: Dictionary files are preserved in project root',
+            '==================================',
+            '',
+            '<comment>Action:</comment> No files will be removed from project',
+            '<comment>Reason:</comment> User dictionaries preserved intentionally',
+            '',
+            '<info>Uninstallation completed safely</info>',
+            ''
+        ]);
     }
 }
