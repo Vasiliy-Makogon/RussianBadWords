@@ -2,32 +2,32 @@
 namespace Krugozor\RussianBadWords;
 
 use Composer\Script\Event;
-use RuntimeException;
+use Composer\Util\Filesystem;
 
 class Installer
 {
-    public static function postInstall(Event $event = null)
+    public static function postInstall(Event $event)
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+        $packageDir = $vendorDir . '/krugozor/russian-bad-words';
         $projectRoot = dirname($vendorDir);
-        $sourceDir = __DIR__ . '/../../dictionary'; // Путь к словарям внутри пакета
-        $targetDir = $projectRoot . '/dictionary';   // Куда копировать (корень проекта)
 
+        // Проверяем существование исходной директории
+        $sourceDir = $packageDir . '/dictionary';
         if (!is_dir($sourceDir)) {
-            throw new RuntimeException("Source directory {$sourceDir} not found!");
+            throw new \RuntimeException("Dictionary directory not found: {$sourceDir}");
         }
 
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir, 0755, true);
-        }
+        // Создаем целевую директорию
+        $targetDir = $projectRoot . '/public/dictionaries';
+        (new Filesystem())->ensureDirectoryExists($targetDir);
 
+        // Копируем файлы
         foreach (glob($sourceDir . '/*.php') as $file) {
             $targetFile = $targetDir . '/' . basename($file);
             if (!copy($file, $targetFile)) {
-                throw new RuntimeException("Failed to copy {$file} to {$targetFile}");
+                throw new \RuntimeException("Failed to copy {$file} to {$targetFile}");
             }
         }
-
-        $event->getIO()->write("RussianBadWords: Dictionaries copied to {$targetDir}");
     }
 }
