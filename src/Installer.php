@@ -11,7 +11,7 @@ class Installer
     public static function postInstall(Event $event)
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-        $packageName = 'krugozor/russian-bad-words';
+        $packageName = implode(DIRECTORY_SEPARATOR, ['krugozor', 'russian-bad-words']);
         $packageDir = implode(DIRECTORY_SEPARATOR, [$vendorDir, $packageName]);
 
         // Проверяем, установлен ли ещё пакет
@@ -45,16 +45,16 @@ class Installer
         }
 
         // Обработка файлов
-        foreach (glob($sourceDir . '/*.php') as $sourceFile) {
+        foreach (glob($sourceDir . DIRECTORY_SEPARATOR . '*.php') as $sourceFile) {
             $filename = basename($sourceFile);
-            $targetFile = $targetDir . '/' . $filename;
+            $targetFile = $targetDir . DIRECTORY_SEPARATOR . $filename;
 
             // Файл существует
             if (file_exists($targetFile)) {
                 // Сравниваем содержимое
                 if (md5_file($sourceFile) !== md5_file($targetFile)) {
                     // Делаем резервную копию перед обновлением
-                    $backupFile = $targetDir . '/backup_' . date('Y-m-d_H:i:s') . $filename;
+                    $backupFile = $targetDir . DIRECTORY_SEPARATOR . 'backup_' . date('Y-m-d_H:i:s') . $filename;
                     copy($targetFile, $backupFile);
 
                     copy($sourceFile, $targetFile);
