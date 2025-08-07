@@ -10,34 +10,65 @@ class Installer
     public static function postInstall(Event $event)
     {
         $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-        $packageDir = $vendorDir.'/krugozor/russian-bad-words';
         $projectRoot = dirname($vendorDir);
+        $packageDir = $vendorDir.'/krugozor/russian-bad-words';
 
-        // 1. Определяем путь через конфиг или используем vendor/krugozor/dictionaries
-        $targetDir = self::getTargetDirectory($event, $projectRoot);
+        // Пути к файлам
+        $sourceDir = $packageDir.'/dictionaries';
+        $targetDir = $projectRoot.'/dictionaries';
 
-        // 2. Создаём директорию
-        (new Filesystem())->ensureDirectoryExists($targetDir);
+        // Инициализация
+        $fs = new Filesystem();
+        $fs->ensureDirectoryExists($targetDir);
 
-        // 3. Копируем файлы
-        $sourceDir = $packageDir.'/dictionary';
-        foreach (glob($sourceDir.'/*.php') as $file) {
-            $target = $targetDir.'/'.basename($file);
-            if (!copy($file, $target)) {
-                throw new \RuntimeException("Failed to copy {$file} to {$target}");
+        // Статистика
+        $newFiles = 0;
+        $updatedFiles = 0;
+        $skippedFiles = 0;
+
+        echo "\nRussian Bad Words Dictionary Installer\n";
+        echo "==================================\n";
+        echo "Source: {$sourceDir}\n";
+        echo "Target: {$targetDir}\n\n";
+
+        // Проверка исходной директории
+        if (!is_dir($sourceDir)) {
+            throw new \RuntimeException("Source directory not found: {$sourceDir}");
+        }
+
+        // Обработка файлов
+        foreach (glob($sourceDir.'/*.php') as $sourceFile) {
+            $filename = basename($sourceFile);
+            $targetFile = $targetDir.'/'.$filename;
+
+            // Файл существует
+            if (file_exists($targetFile)) {
+                // Сравниваем содержимое
+                if (md5_file($sourceFile) !== md5_file($targetFile)) {
+                    // Делаем резервную копию перед обновлением
+                    $backupFile = $targetDir.'/backup_'.$filename;
+                    copy($targetFile, $backupFile);
+
+                    copy($sourceFile, $targetFile);
+                    $updatedFiles++;
+                    echo "[UPDATED] {$filename} (backup saved as backup_{$filename})\n";
+                } else {
+                    $skippedFiles++;
+                    echo "[SKIPPED] {$filename} (no changes)\n";
+                }
+            } else {
+                // Новый файл
+                copy($sourceFile, $targetFile);
+                $newFiles++;
+                echo "[ADDED] {$filename}\n";
             }
         }
-    }
 
-    private static function getTargetDirectory(Event $event, string $projectRoot): string
-    {
-        // Вариант 1: Через extra-конфиг в composer.json проекта
-        $extra = $event->getComposer()->getPackage()->getExtra();
-        if (isset($extra['russian-bad-words']['target-dir'])) {
-            return $projectRoot.'/'.$extra['russian-bad-words']['target-dir'];
-        }
-
-        // Вариант 2: Стандартное расположение
-        return $projectRoot.'/vendor/krugozor/dictionaries';
+        // Итоговый отчёт
+        echo "\nOperation complete:\n";
+        echo "- New files added: {$newFiles}\n";
+        echo "- Files updated: {$updatedFiles} (backups created)\n";
+        echo "- Files skipped: {$skippedFiles}\n";
+        echo "\nNote: User-modified files are preserved automatically.\n";
     }
 }
