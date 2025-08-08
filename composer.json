@@ -2,11 +2,27 @@
     "name": "krugozor/russian-bad-words",
     "description": "Словарь и валидация плохих русских слов для PHP",
     "type": "library",
+    "homepage": "https://github.com/Vasiliy-Makogon/RussianBadWords",
     "keywords": [
         "bad words",
+        "profanity filter",
+        "obscenity filter",
         "russian bad words",
+        "russian profanity",
+        "russian obscenities",
+        "ненормативная лексика",
+        "фильтр мата",
+        "фильтр ненормативной лексики",
+        "словарь мата",
+        "словарь ненормативной лексики",
         "словарь плохих русских слов",
-        "словарь плохих слов"
+        "словарь плохих слов",
+        "фильтр ругательств",
+        "цензура текста",
+        "модерация контента",
+        "content moderation",
+        "text filtering",
+        "blacklist words"
     ],
     "require": {
         "php": ">=7.4",
