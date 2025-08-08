@@ -1715,8 +1715,6 @@ class ProfanityWordsValidator extends AbstractBadWordsValidator
         'трепак',
         'трипер',
         'триппер',
-        'тупорылый',
-        'тянки',
         'ублюдок',
         'угондошить',
         'уебан',
