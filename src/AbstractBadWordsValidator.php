@@ -31,7 +31,7 @@ class AbstractBadWordsValidator
     private string $value;
 
     /**
-     * @var array Массив плохих слов, найденных после запуска метода static::validate()
+     * @var array Массив плохих слов, найденных после запуска метода validate()
      */
     private array $failedWords = [];
 
@@ -46,7 +46,7 @@ class AbstractBadWordsValidator
             ));
         }
 
-        $this->value = $value;
+        $this->value = trim($value);
     }
 
     /**
