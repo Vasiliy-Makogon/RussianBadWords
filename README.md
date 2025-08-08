@@ -5,12 +5,12 @@
 ## Что это и для чего?
 Пакет предоставляет два типа словарей для валидации пользовательского контента:
 
-1. **StopWordsValidator** - проверяет на наличие стоп-слов, которые могут привести к блокировке Роскомнадзором:
+1. **[StopWordsValidator](dictionaries/StopWordsValidator.php)** - проверяет на наличие стоп-слов, которые могут привести к блокировке Роскомнадзором:
     - Запрещённые товары (электроудочки, наркотические вещества)
     - Нежелательные услуги (гадания, эскорт-услуги, кредиты)
     - Другие проблемные категории
 
-2. **ProfanityWordsValidator** - проверяет на ненормативную лексику (матерные слова)
+2. **[ProfanityWordsValidator](dictionaries/ProfanityWordsValidator.php)** - проверяет на ненормативную лексику (матерные слова)
 
 
 Словарь предназначен для веб-мастеров, которе обслуживают информационные системы,
@@ -62,31 +62,32 @@ composer require krugozor/russian-bad-words
 Смотрите факт её создания в проводнике.
 
 ## Использование
-Пример валидации текста (данный пример после установки пакета находится в директории `vendor/krugozor/russian-bad-words/console/sample.php` и доступен для выполнения):
+Пример валидации текста:
 
 ```php
 <?php
+// Подключите '/vendor/autoload.php'
+
+use Krugozor\RussianBadWords\Items\ProfanityWordsValidator;
+use Krugozor\RussianBadWords\Items\StopWordsValidator;
+
 // Проверка сообщения от пользователя.
 // В слове "электрo-фишер" кириллическая буква "о" заменена на латинскую,
 // а слова умышленно соединены различными символами с целью обмана программы.
 // В слове "сукa" кириллическая буква "a" заменена на латинскую.
 $message = 'Продам_электрo-фишер.fisher-f-3500 не дорого! Ну и немного нембутала, сукa';
 
-$validator = new Krugozor\RussianBadWords\Items\StopWordsValidator($message);
+$validator = new StopWordsValidator($message);
 if (!$validator->validate()) {
     echo "Текст не проходит валидацию! Плохие слова:\n";
     print_r($validator->getFailedWords());
 }
 
-$validator = new Krugozor\RussianBadWords\Items\ProfanityWordsValidator($message);
+$validator = new ProfanityWordsValidator($message);
 if (!$validator->validate()) {
     echo "Текст не проходит валидацию! Ненормативная лексика:\n";
     print_r($validator->getFailedWords());
 }
-```
-Запуск:
-```bash
- php vendor/krugozor/russian-bad-words/console/sample.php
 ```
 Результат:
 ```
@@ -114,7 +115,12 @@ Array
 
 Данный подход позволяет системе выявлять запрещённые слова, даже если в них часть букв была заменена на схожие по начертанию английские символы.
 
-## Принцип работы резервных копий
+## Обновление словарей и пакета
+```bash
+composer update krugozor/russian-bad-words
+```
+
+### Принцип работы резервных копий
 
 При обновлении пакета система автоматически создает резервные копии измененных файлов словарей по следующему алгоритму:
 ```mermaid
@@ -156,18 +162,12 @@ dictionaries/
 ### Управление резервными копиями
 ```bash
 # Просмотр резервных копий
-ls dictionaries/*.php
+ls dictionaries/*_*.php
 
 # Восстановление из резервной копии
 cp dictionaries/2025-08-08_153045_StopWordsValidator.php dictionaries/StopWordsValidator.php
 ```
 Важно: Система никогда не удаляет резервные копии автоматически
-
-## Обновление словарей
-Стандартное обновление из репозитория (с изменениями от автора пакета):
-```bash
-composer update krugozor/russian-bad-words
-```
 
 ## Добавление своих слов
 Откройте нужный файл словаря и добавьте слова в массив:
@@ -190,6 +190,6 @@ return [
 ```bash
 composer remove krugozor/russian-bad-words
 ```
-При удалении файлы словарей остаются в вашем проекте - защита от дурака.
+При удалении файлы словарей остаются в вашем проекте.
 
 
