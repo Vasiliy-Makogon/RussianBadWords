@@ -24,14 +24,10 @@
 
 ## Установка
 
-### 1. Добавьте/измените секции `require`, `scripts` и `autoload` в `composer.json` вашего проекта:
+### 1. Добавьте/измените данные в секции `scripts` и `autoload` в `composer.json` вашего проекта:
 
 ```json
 {
-    "require": {
-        "krugozor/russian-bad-words": "^1.0"
-    },
-
     "scripts": {
         "post-install-cmd": [
             "Krugozor\\RussianBadWords\\Installer::postInstall"
