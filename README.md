@@ -170,11 +170,6 @@ cp dictionaries/2025-08-08_153045_StopWordsValidator.php dictionaries/StopWordsV
 ```bash
 composer update krugozor/russian-bad-words
 ```
-Принудительное обновление (с перезаписью ваших правок)
-```bash
-rm dictionaries/*
-composer update krugozor/russian-bad-words
-```
 
 ## Добавление своих слов
 Откройте нужный файл словаря и добавьте слова в массив:
