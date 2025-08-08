@@ -6,6 +6,8 @@ use Composer\Script\Event;
 use Composer\Util\Filesystem;
 use Composer\Installer\PackageEvent;
 
+// Установщик создан ИИ
+
 class Installer
 {
     public static function postInstall(Event $event)
@@ -54,7 +56,7 @@ class Installer
                 // Сравниваем содержимое
                 if (md5_file($sourceFile) !== md5_file($targetFile)) {
                     // Делаем резервную копию перед обновлением
-                    $backupFile = $targetDir . DIRECTORY_SEPARATOR . 'backup_' . date('Y-m-d_H:i:s') . $filename;
+                    $backupFile = $targetDir . DIRECTORY_SEPARATOR . date('Y-m-d_His') . '_' . $filename;
                     copy($targetFile, $backupFile);
 
                     copy($sourceFile, $targetFile);
