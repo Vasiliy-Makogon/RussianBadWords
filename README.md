@@ -144,15 +144,15 @@ E --> F
 ```
 dictionaries/
 ├── StopWordsValidator.php (ваша версия)
-└── ProfanityWordsValidator.php (ваша версия)
+└── ProfanityWordsValidator.php (версия из репозитория)
 ```
 
 После обновления:
 ```
 dictionaries/
-├── StopWordsValidator.php (новая версия)
+├── StopWordsValidator.php (версия из репозитория)
 ├── 2025-08-08_153045_StopWordsValidator.php (ваша старая версия)
-└── ProfanityWordsValidator.php (без изменений)
+└── ProfanityWordsValidator.php (версия из репозитория)
 ```
 
 ### Управление резервными копиями
