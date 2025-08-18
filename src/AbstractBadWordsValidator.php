@@ -4,7 +4,7 @@ namespace Krugozor\RussianBadWords;
 
 use RuntimeException;
 
-class AbstractBadWordsValidator
+abstract class AbstractBadWordsValidator
 {
     /** @var array|array[] */
     protected static array $letters = [
