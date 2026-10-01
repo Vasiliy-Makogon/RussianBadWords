@@ -1,6 +1,6 @@
 {
     "name": "krugozor/russian-bad-words",
-    "description": "Словарь и валидация плохих русских слов для PHP",
+    "description": "Словари мата, грубой лексики и стоп-слов с валидатором для русскоязычного пользовательского контента на PHP",
     "type": "library",
     "homepage": "https://github.com/Vasiliy-Makogon/RussianBadWords",
     "keywords": [
@@ -24,29 +24,37 @@
         "text filtering",
         "blacklist words"
     ],
-    "require": {
-        "php": ">=7.4",
-        "ext-mbstring": "*"
-    },
     "authors": [
         {
             "name": "Vasiliy Makogon"
         }
     ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^9.6"
+    },
+    "suggest": {
+        "ext-intl": "Композиция NFC для составных символов Unicode при нормализации слов"
+    },
     "autoload": {
         "psr-4": {
             "Krugozor\\RussianBadWords\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Krugozor\\RussianBadWords\\Tests\\": "tests/"
+        }
+    },
     "scripts": {
-        "post-install-cmd": [
-            "Krugozor\\RussianBadWords\\Installer::postInstall"
-        ],
-        "post-update-cmd": [
-            "Krugozor\\RussianBadWords\\Installer::postInstall"
-        ],
-        "pre-package-uninstall": [
-            "Krugozor\\RussianBadWords\\Installer::preUninstall"
-        ]
+        "test": "phpunit",
+        "analyse": "phpstan analyse"
+    },
+    "config": {
+        "sort-packages": true
     }
 }

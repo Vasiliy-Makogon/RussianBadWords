@@ -2,109 +2,57 @@
 
 namespace Krugozor\RussianBadWords;
 
-use Composer\Script\Event;
-use Composer\Util\Filesystem;
-use Composer\Installer\PackageEvent;
-
-// Установщик создан ИИ
-
+/**
+ * Заглушка установщика 1.x. Пакет 2.x ничего не копирует в проект: словари подключаются
+ * через Dictionary, а свои слова и исключения проект задаёт в коде.
+ *
+ * Класс оставлен, чтобы composer.json проектов с вызовами Installer продолжал работать
+ * без предупреждений об отсутствующем классе; при вызове печатается подсказка.
+ *
+ * @deprecated Удалите вызовы Installer из секции scripts вашего composer.json.
+ */
 class Installer
 {
-    public static function postInstall(Event $event)
-    {
-        $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-        $packageName = implode(DIRECTORY_SEPARATOR, ['krugozor', 'russian-bad-words']);
-        $packageDir = implode(DIRECTORY_SEPARATOR, [$vendorDir, $packageName]);
+    private const NOTICE = 'krugozor/russian-bad-words 2.x больше не копирует словари в проект. '
+        . 'Удалите вызовы Krugozor\RussianBadWords\Installer из секции scripts вашего composer.json '
+        . 'и подключите словари через Dictionary (см. README).';
 
-        // Проверяем, установлен ли ещё пакет
-        if (!file_exists($packageDir)) {
+    private static bool $notified = false;
+
+    /**
+     * @param object|null $event Composer\Script\Event
+     */
+    public static function postInstall($event = null): void
+    {
+        self::notify($event);
+    }
+
+    /**
+     * @param object|null $event Composer\Installer\PackageEvent
+     */
+    public static function preUninstall($event = null): void
+    {
+    }
+
+    /**
+     * @param object|null $event
+     */
+    private static function notify($event): void
+    {
+        if (self::$notified) {
             return;
         }
+        self::$notified = true;
 
-        $projectRoot = dirname($vendorDir);
+        if (is_object($event) && method_exists($event, 'getIO')) {
+            $io = $event->getIO();
+            if (is_object($io) && method_exists($io, 'writeError')) {
+                $io->writeError('<warning>' . self::NOTICE . '</warning>');
 
-        // Пути к файлам
-        $sourceDir = implode(DIRECTORY_SEPARATOR, [$packageDir, 'dictionaries']);
-        $targetDir = implode(DIRECTORY_SEPARATOR, [$projectRoot, 'dictionaries']);
-
-        // Инициализация
-        $fs = new Filesystem();
-        $fs->ensureDirectoryExists($targetDir);
-
-        // Статистика
-        $newFiles = 0;
-        $updatedFiles = 0;
-        $skippedFiles = 0;
-
-        echo "\nRussian Bad Words Dictionary Installer\n";
-        echo "==================================\n";
-        echo "Source: {$sourceDir}\n";
-        echo "Target: {$targetDir}\n\n";
-
-        // Проверка исходной директории
-        if (!is_dir($sourceDir)) {
-            throw new \RuntimeException("Source directory not found: {$sourceDir}");
-        }
-
-        // Обработка файлов
-        foreach (glob($sourceDir . DIRECTORY_SEPARATOR . '*.php') as $sourceFile) {
-            $filename = basename($sourceFile);
-            $targetFile = $targetDir . DIRECTORY_SEPARATOR . $filename;
-
-            // Файл существует
-            if (file_exists($targetFile)) {
-                // Сравниваем содержимое
-                if (md5_file($sourceFile) !== md5_file($targetFile)) {
-                    // Делаем резервную копию перед обновлением
-                    $backupFile = $targetDir . DIRECTORY_SEPARATOR . date('Y-m-d_His') . '_' . $filename;
-                    copy($targetFile, $backupFile);
-
-                    copy($sourceFile, $targetFile);
-                    $updatedFiles++;
-                    echo "[UPDATED] {$targetFile} (backup saved as $backupFile)\n";
-                } else {
-                    $skippedFiles++;
-                    echo "[SKIPPED] {$targetFile} (no changes)\n";
-                }
-            } else {
-                // Новый файл
-                copy($sourceFile, $targetFile);
-                $newFiles++;
-                echo "[ADDED] {$targetFile}\n";
+                return;
             }
         }
 
-        // Итоговый отчёт
-        echo "\nOperation complete:\n";
-        echo "- New files added: {$newFiles}\n";
-        echo "- Files updated: {$updatedFiles} (backups created)\n";
-        echo "- Files skipped: {$skippedFiles}\n";
-        echo "\nNote: User-modified files are preserved automatically.\n";
-    }
-
-    public static function preUninstall(PackageEvent $event)
-    {
-        $io = $event->getIO();
-        $package = $event->getOperation()->getPackage();
-
-        $io->write([
-            '',
-            '<info>=== Russian Bad Words Package Removal ===</info>',
-            '=========================================',
-            sprintf('<comment>Package:</comment>    %s', $package->getName()),
-            sprintf('<comment>Version:</comment>     %s', $package->getPrettyVersion()),
-            '',
-            '<fg=yellow>NOTICE: Dictionary files preservation</>',
-            '• Your custom dictionary files in /dictionaries/',
-            '• Will NOT be modified or removed',
-            '',
-            '<comment>Why?</comment>',
-            '• To protect your custom word modifications',
-            '• To prevent accidental data loss',
-            '',
-            '<info>Uninstallation completed safely</info>',
-            '=========================================',
-            ''
-        ]);
+        fwrite(STDERR, self::NOTICE . PHP_EOL);
     }
 }
