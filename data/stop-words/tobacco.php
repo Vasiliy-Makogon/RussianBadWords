@@ -7,7 +7,6 @@
 return [
     'icos',
     'iqos',
-    'solid',
     'vape',
     'vaping',
     'айкос',
